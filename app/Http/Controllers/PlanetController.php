@@ -28,8 +28,6 @@ class PlanetController extends Controller
                     $terrain = strtolower($planet['terrain'] ?? '');
                     $population = strtolower($planet['population'] ?? '');
 
-                    info($planet);
-
                     if (
 
                         $diameter === 'unknown' || $diameter === '0' ||

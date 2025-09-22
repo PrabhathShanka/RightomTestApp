@@ -19,22 +19,14 @@
             </div>
         </div>
 
-        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Diameter</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Terrain</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Population</th>
-                    </tr>
-                </thead>
-                <tbody id="planetsTableBody" class="bg-white divide-y divide-gray-200">
-                </tbody>
-            </table>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="planetsGrid">
+
         </div>
 
-        <div id="paginationLinks" class="mt-4"></div>
+
+        <div id="paginationLinks" class="mt-6 flex justify-center md:justify-end items-center">
+        </div>
     </div>
 
     <script>
@@ -56,22 +48,28 @@
                         page
                     },
                     success: function(res) {
-                        let rows = '';
+                        let cards = '';
                         res.data.forEach(planet => {
-                            rows += `
-                                    <tr class="hover:bg-gray-50 cursor-pointer"
-                                        onclick="window.location='${planetShowBaseUrl.replace(':id', planet.url.split('/').filter(Boolean).pop())}'">
-                                        <td class="px-6 py-4 text-sm font-medium text-gray-900">${planet.name}</td>
-                                        <td class="px-6 py-4 text-sm text-gray-500">${planet.diameter}</td>
-                                        <td class="px-6 py-4 text-sm text-gray-500">${planet.terrain}</td>
-                                        <td class="px-6 py-4 text-sm text-gray-500">${planet.population}</td>
-                                    </tr>
-                                `;
-
-
+                            const planetId = planet.url.split('/').filter(Boolean).pop();
+                            cards += `
+                            <div class="bg-white shadow-lg rounded-lg p-4 hover:shadow-xl transition duration-300 cursor-pointer"
+                                onclick="window.location='${planetShowBaseUrl.replace(':id', planetId)}'">
+                                <h2 class="text-xl font-bold mb-2 text-gray-800">${planet.name}</h2>
+                                <p class="text-gray-600"><strong>Diameter:</strong> ${planet.diameter}</p>
+                                <p class="text-gray-600"><strong>Terrain:</strong> ${planet.terrain}</p>
+                                <p class="text-gray-600"><strong>Population:</strong> ${planet.population}</p>
+                            </div>
+                        `;
                         });
-                        $('#planetsTableBody').html(rows);
+
+                        $('#planetsGrid').html(cards);
                         $('#paginationLinks').html(res.pagination);
+                    },
+                    error: function() {
+                        $('#planetsGrid').html(
+                            '<p class="text-red-500 text-center">Failed to load planets. Please try again.</p>'
+                        );
+                        $('#paginationLinks').html('');
                     }
                 });
             }
