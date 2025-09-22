@@ -15,8 +15,6 @@ return new class extends Migration {
             $table->decimal('interest_rate', 5, 2);
             $table->enum('loan_type', ['Flat', 'Reducing']);
             $table->decimal('emi', 15, 2);
-
-            // Add remaining_principal and status
             $table->decimal('remaining_principal', 15, 2);
             $table->enum('status', ['approved', 'rejected'])->default('approved');
 
