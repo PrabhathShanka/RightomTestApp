@@ -7,6 +7,10 @@ use App\Models\Loan;
 use App\Models\LoanPayment;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLoanPaymentRequest;
+use App\Mail\LoanNotificationMail;
+use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
+
 
 class LoanPaymentController extends Controller
 {
@@ -36,6 +40,19 @@ class LoanPaymentController extends Controller
             $message = $loan->remaining_principal <= 0
                 ? 'Loan fully paid'
                 : 'Payment recorded successfully';
+
+            $nextDueDate = Carbon::now()->addMonth()->format('Y-m-d');
+
+
+            Mail::to('customer_email@example.com')
+                ->queue(new LoanNotificationMail(
+                    $loan->customer_name,
+                    $request->amount,
+                    $loan->remaining_principal,
+                    $nextDueDate,
+                    'repayment'
+                ));
+
 
             return response()->json([
                 'status' => 'success',

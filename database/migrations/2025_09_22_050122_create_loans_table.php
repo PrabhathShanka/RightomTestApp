@@ -18,7 +18,7 @@ return new class extends Migration {
 
             // Add remaining_principal and status
             $table->decimal('remaining_principal', 15, 2);
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('status', ['approved', 'rejected'])->default('approved');
 
             $table->timestamps();
         });

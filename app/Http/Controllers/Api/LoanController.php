@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLoanRequest;
 use App\Models\Loan;
 use Illuminate\Http\Request;
+use App\Mail\LoanNotificationMail;
+use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
 
 class LoanController extends Controller
 {
@@ -51,6 +54,16 @@ class LoanController extends Controller
                 'emi' => $emi,
                 'remaining_principal' => $validated['principal'],
             ]);
+            $nextDueDate = Carbon::now()->addMonth()->format('Y-m-d');
+
+            Mail::to('customer_email@example.com')
+                ->queue(new LoanNotificationMail(
+                    $loan->customer_name,
+                    $loan->principal,
+                    $loan->principal,
+                     $nextDueDate,
+                    'approved'
+                ));
 
             return response()->json([
                 'status' => 'success',
